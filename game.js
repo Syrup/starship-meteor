@@ -8,7 +8,6 @@ let starship = {
   y: canvas.height - 50,
   width: 50,
   height: 50,
-  color: "blue",
   bullets: [],
   speed: 5,
   maxSpeed: 10,
@@ -17,11 +16,25 @@ let starship = {
   bulletSpeed: 7,
   lastBulletTime: 0,
   bulletCooldown: 300,
+  shootBullet() {
+    let bulletFired = new CustomEvent("bulletFired");
+    window.dispatchEvent(bulletFired);
+
+    let currentTime = new Date().getTime();
+    if (currentTime - this.lastBulletTime > this.bulletCooldown) {
+      this.bullets.push({
+        x: this.x + this.width / 2 - 2.5,
+        y: this.y,
+        width: 5,
+        height: 10,
+      });
+      this.lastBulletTime = currentTime;
+    }
+  },
 };
 
 let score = 0;
 let explosionSound = new Audio("assets/sounds/explosion.mp3");
-let backgroundSound = new Audio("assets/sounds/background.mp3");
 let bulletSound = new Audio("assets/sounds/bullet.mp3");
 
 let enemyImage = new Image();
@@ -29,8 +42,6 @@ enemyImage.src = "assets/img/enemy.png";
 
 let starshipImage = new Image();
 starshipImage.src = "assets/img/spaceship.png";
-
-backgroundSound.loop = true;
 
 let keys = {
   ArrowLeft: false,
@@ -46,7 +57,6 @@ function resetGame() {
     y: canvas.height - 50,
     width: 50,
     height: 50,
-    color: "blue",
     bullets: [],
     speed: 5,
     maxSpeed: 10,
@@ -55,6 +65,7 @@ function resetGame() {
     bulletSpeed: 7,
     lastBulletTime: 0,
     bulletCooldown: 300,
+    ...starship,
   };
 
   score = 0;
@@ -86,15 +97,6 @@ function createEnemy() {
   enemies.push(newEnemy);
 }
 
-function checkCollision(rect1, rect2) {
-  return (
-    rect1.x < rect2.x + rect2.width &&
-    rect1.x + rect1.width > rect2.x &&
-    rect1.y < rect2.y + rect2.height &&
-    rect1.y + rect1.height > rect2.y
-  );
-}
-
 function applyText(canvas, text) {
   const ctx = canvas.getContext("2d");
   let fontSize = 70;
@@ -107,7 +109,7 @@ function applyText(canvas, text) {
 }
 
 function updateGame() {
-  if (score === 60) {
+  if (score === 1) {
     let isMobile = window.innerWidth <= 768;
 
     context.font = isMobile
@@ -143,19 +145,8 @@ function updateGame() {
     starship.speed = 0;
   }
 
-  if (
-    keys[" "] &&
-    new Date().getTime() - starship.lastBulletTime > starship.bulletCooldown
-  ) {
-    starship.bullets.push({
-      x: starship.x + starship.width / 2 - 2.5,
-      y: starship.y,
-      width: 5,
-      height: 10,
-    });
-    starship.lastBulletTime = new Date().getTime();
-    let bulletFired = new CustomEvent("bulletFired");
-    window.dispatchEvent(bulletFired);
+  if (keys[" "]) {
+    starship.shootBullet();
   }
 
   context.clearRect(0, 0, canvas.width, canvas.height);
@@ -201,8 +192,8 @@ function updateGame() {
         starship.bullets.splice(j, 1);
         score++;
 
-        let explosionEvent = new CustomEvent("explosion");
-        window.dispatchEvent(explosionEvent);
+        let meteorDestroyedEvent = new CustomEvent("meteorDestroyed");
+        window.dispatchEvent(meteorDestroyedEvent);
       }
     });
   });
@@ -231,19 +222,7 @@ window.addEventListener("keydown", (e) => {
       starship.direction = 1;
       break;
     case " ":
-      let bulletFired = new CustomEvent("bulletFired");
-      window.dispatchEvent(bulletFired);
-      let currentTime = new Date().getTime();
-      if (currentTime - starship.lastBulletTime > starship.bulletCooldown) {
-        starship.bullets.push({
-          x: starship.x + starship.width / 2 - 2.5,
-          y: starship.y,
-          width: 5,
-          height: 10,
-        });
-        starship.lastBulletTime = currentTime;
-      }
-
+      starship.shootBullet();
       break;
   }
 });
@@ -260,17 +239,6 @@ window.addEventListener("keyup", (e) => {
   }
 });
 
-window.addEventListener("bulletFired", () => {
-  bulletSound.play();
-});
-
-window.addEventListener("explosion", () => {
-  explosionSound.play();
-});
-
-while (enemies.length < 10) {
-  createEnemy();
-}
 document
   .getElementById("leftButton")
   .addEventListener("touchstart", function () {
@@ -292,22 +260,21 @@ document
 document
   .getElementById("shootButton")
   .addEventListener("touchstart", function () {
-    let bulletFired = new CustomEvent("bulletFired");
-    window.dispatchEvent(bulletFired);
-
-    let currentTime = new Date().getTime();
-    if (currentTime - starship.lastBulletTime > starship.bulletCooldown) {
-      starship.bullets.push({
-        x: starship.x + starship.width / 2 - 2.5,
-        y: starship.y,
-        width: 5,
-        height: 10,
-      });
-      starship.lastBulletTime = currentTime;
-    }
+    starship.shootBullet();
   });
 
+window.addEventListener("bulletFired", () => {
+  bulletSound.play();
+});
+
+window.addEventListener("meteorDestroyed", () => {
+  explosionSound.play();
+});
+
+while (enemies.length < 10) {
+  createEnemy();
+}
+
 window.onload = () => {
-  backgroundSound.play();
   updateGame();
 };
