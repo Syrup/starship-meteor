@@ -16,8 +16,9 @@ let starship = {
   direction: 0,
   bulletSpeed: 7,
   lastBulletTime: 0,
-  bulletCooldown: 300, // in milliseconds
+  bulletCooldown: 300,
 };
+
 let score = 0;
 let explosionSound = new Audio("assets/sounds/explosion.mp3");
 let backgroundSound = new Audio("assets/sounds/background.mp3");
@@ -27,10 +28,9 @@ let enemyImage = new Image();
 enemyImage.src = "assets/img/enemy.png";
 
 let starshipImage = new Image();
-starshipImage.src = "assets/img/spaceship.png"; // replace with the path to your image
+starshipImage.src = "assets/img/spaceship.png";
 
 backgroundSound.loop = true;
-// backgroundSound.play();
 
 let keys = {
   ArrowLeft: false,
@@ -41,7 +41,6 @@ let keys = {
 let enemies = [];
 
 function resetGame() {
-  // Reset starship
   starship = {
     x: canvas.width / 2,
     y: canvas.height - 50,
@@ -55,39 +54,26 @@ function resetGame() {
     direction: 0,
     bulletSpeed: 7,
     lastBulletTime: 0,
-    bulletCooldown: 300, // in milliseconds
+    bulletCooldown: 300,
   };
 
-  // Reset score
   score = 0;
 
-  // Clear enemies
   enemies = [];
 
-  // Create new enemies
   while (enemies.length < 10) {
     createEnemy();
   }
 }
 
 function createEnemy() {
-  // let enemy = {
-  //   x: Math.random() * (canvas.width - 30),
-  //   y: -30,
-  //   width: 30,
-  //   height: 30,
-  //   color: "red",
-  //   speed: 2,
-  // };
-  // enemies.push(enemy);
-
-  let minDistance = 16; // Minimum distance between enemies
+  let minDistance = 16;
   let newEnemy;
 
   do {
     newEnemy = {
       x: Math.random() * (canvas.width - 30),
-      y: Math.random() * -canvas.height, // Randomize y position
+      y: Math.random() * -canvas.height,
       width: 30,
       height: 30,
       color: "red",
@@ -123,20 +109,18 @@ function applyText(canvas, text) {
 function updateGame() {
   if (score === 1) {
     let isMobile = window.innerWidth <= 768;
-    // Display "You Win!" message
+
     context.font = isMobile
       ? `30px "Press Start 2P", Arial, sans-serif`
       : applyText(canvas, "You Win!");
     context.fillStyle = "white";
     context.fillText("You Win!", canvas.width / 3.7, canvas.height / 2);
 
-    // Reset game after 3 seconds
     setTimeout(() => {
       resetGame();
       requestAnimationFrame(updateGame);
     }, 1000);
 
-    // Exit the function to prevent the rest of the code from running
     return;
   }
 
@@ -159,7 +143,6 @@ function updateGame() {
     starship.speed = 0;
   }
 
-  // Bullet firing logic
   if (
     keys[" "] &&
     new Date().getTime() - starship.lastBulletTime > starship.bulletCooldown
@@ -177,7 +160,6 @@ function updateGame() {
 
   context.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Draw starship
   context.drawImage(
     starshipImage,
     starship.x,
@@ -185,10 +167,7 @@ function updateGame() {
     starship.width,
     starship.height
   );
-  // context.fillStyle = starship.color;
-  // context.fillRect(starship.x, starship.y, starship.width, starship.height);
 
-  // Draw bullets
   starship.bullets.forEach((bullet, i) => {
     context.fillStyle = "white";
     context.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
@@ -202,10 +181,7 @@ function updateGame() {
   context.font = "16px 'Press Start 2P', Arial";
   context.fillText("Score: " + score, 10, 25);
 
-  // Draw enemies
   enemies.forEach((enemy, i) => {
-    // context.fillStyle = enemy.color;
-    // context.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
     context.drawImage(enemyImage, enemy.x, enemy.y, enemy.width, enemy.height);
     enemy.y += enemy.speed;
     if (enemy.y > canvas.height) {
@@ -213,7 +189,6 @@ function updateGame() {
     }
   });
 
-  // Collision detection
   enemies.forEach((enemy, i) => {
     starship.bullets.forEach((bullet, j) => {
       if (
@@ -232,7 +207,6 @@ function updateGame() {
     });
   });
 
-  // Create new enemy every 2 seconds
   if (Math.random() < 0.01) {
     createEnemy();
   }
@@ -297,34 +271,24 @@ window.addEventListener("explosion", () => {
 while (enemies.length < 10) {
   createEnemy();
 }
-
-// Add touchstart event listener for left movement
 document
   .getElementById("leftButton")
   .addEventListener("touchstart", function () {
     starship.direction = -1;
   });
-
-// Add touchend event listener for left movement
 document.getElementById("leftButton").addEventListener("touchend", function () {
   starship.direction = 0;
 });
-
-// Add touchstart event listener for right movement
 document
   .getElementById("rightButton")
   .addEventListener("touchstart", function () {
     starship.direction = 1;
   });
-
-// Add touchend event listener for right movement
 document
   .getElementById("rightButton")
   .addEventListener("touchend", function () {
     starship.direction = 0;
   });
-
-// Add touchstart event listener for shooting
 document
   .getElementById("shootButton")
   .addEventListener("touchstart", function () {
