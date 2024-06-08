@@ -109,7 +109,7 @@ function applyText(canvas, text) {
 }
 
 function updateGame() {
-  if (score === 1) {
+  if (score === 60) {
     let isMobile = window.innerWidth <= 768;
 
     context.font = isMobile
