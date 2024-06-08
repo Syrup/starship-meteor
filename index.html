@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <title>Starship Game</title>
+  <style>
+    body {
+      background: #000;
+    }
+
+    #gameCanvas {
+      background: #000;
+      border: 1px solid white;
+    }
+
+    #leftButton,
+    #rightButton,
+    #shootButton {
+      width: 100px;
+      height: 100px;
+      font-size: 20px;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    .button-container {
+      position: fixed;
+      bottom: 20px;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      margin-bottom: 100px;
+    }
+
+    #controlInfo {
+      display: none;
+    }
+
+    #missionInfo {
+      display: none;
+    }
+
+    @media (min-width: 768px) {
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        color: white;
+        margin: 0;
+      }
+
+      #leftButton,
+      #rightButton,
+      #shootButton {
+        display: none;
+      }
+
+      #gameCanvas {
+        width: 800px;
+        height: 600px;
+      }
+
+      #controlInfo {
+        display: block;
+        margin-left: 20px;
+      }
+    }
+
+    @media (max-width: 767px) {
+      body {
+        display: block;
+      }
+
+      #gameCanvas {
+        width: 100%;
+        height: 600px;
+      }
+
+      #missionInfo {
+        display: block;
+        text-align: center;
+        color: white;
+        margin-top: 200px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="gameCanvas"></canvas>
+  <div id="controlInfo">
+    <h2>Controls</h2>
+    <p>Left Arrow: Move Left</p>
+    <p>Right Arrow: Move Right</p>
+    <p>Space: Shoot</p>
+    <p>Mission: Shoot 60 meteors</p>
+  </div>
+  <div class="button-container">
+    <button id="leftButton">Move Left</button>
+    <button id="rightButton">Move Right</button>
+    <button id="shootButton">Shoot</button>
+  </div>
+  <div id="missionInfo">
+    <p>Mission: Shoot 60 meteors</p>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+
+</html>
