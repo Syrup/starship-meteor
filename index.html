@@ -15,6 +15,12 @@
       border: 1px solid white;
     }
 
+    #muteButton {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+
     #leftButton,
     #rightButton,
     #shootButton {
@@ -107,8 +113,9 @@
 </head>
 
 <body>
-  <audio src="/assets/sounds/background.mp3" autoplay loop></audio>
+  <audio id="bgm" src="/assets/sounds/background.mp3" loop></audio>
   <canvas id="gameCanvas"></canvas>
+  <button id="muteButton">Play BGM</button>
   <div id="controlInfo">
     <h2>Controls</h2>
     <p>Left Arrow: Move Left</p>

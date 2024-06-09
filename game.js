@@ -3,6 +3,26 @@ const context = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
+let muteButton = document.getElementById("muteButton");
+let bgm = document.getElementById("bgm");
+let isFirstClick = true;
+
+muteButton.addEventListener("click", function () {
+  if (isFirstClick) {
+    bgm.play();
+    isFirstClick = false;
+    muteButton.textContent = "Mute BGM";
+  } else {
+    if (bgm.muted) {
+      bgm.muted = false;
+      muteButton.textContent = "Mute BGM";
+    } else {
+      bgm.muted = true;
+      muteButton.textContent = "Unmute BGM";
+    }
+  }
+});
+
 let starship = {
   x: canvas.width / 2,
   y: canvas.height - 50,
@@ -170,7 +190,7 @@ function updateGame() {
 
   context.fillStyle = "white";
   context.font = "16px 'Press Start 2P', Arial";
-  context.fillText("Score: " + score, 10, 25);
+  context.fillText("Scores: " + score, 10, 25);
 
   enemies.forEach((enemy, i) => {
     context.drawImage(enemyImage, enemy.x, enemy.y, enemy.width, enemy.height);
